@@ -1,0 +1,45 @@
+package sistemasolar;
+
+import javax.swing.*;
+import java.awt.*;
+
+public class SistemaSolar extends JPanel {
+
+    public SistemaSolar() {
+        setPreferredSize(new Dimension(800, 600));
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+               
+        g.setFont(new Font("Arial", Font.BOLD, 24));
+        g.drawString("Este es el sistema solar", 250, 50);
+        
+        g.setColor(Color.YELLOW);
+        g.fillOval(350, 100, 100, 100); // Sol
+
+        g.setColor(Color.BLUE);
+        g.fillOval(200, 250, 30, 30); // Tierra
+        g.setColor(Color.RED);
+        g.fillOval(400, 250, 20, 20); // Marte
+        g.setColor(Color.GRAY);
+        g.fillOval(500, 250, 15, 15); // Mercurio
+        g.setColor(Color.ORANGE);
+        g.fillOval(600, 250, 25, 25); // Júpiter
+        g.setColor(Color.CYAN);
+        g.fillOval(700, 250, 20, 20); // Saturno
+    }
+
+    public static void main(String[] args) {
+        // Crear el marco de la ventana
+        JFrame frame = new JFrame("Sistema Solar");
+        SistemaSolar panel = new SistemaSolar();
+        
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.add(panel);
+        frame.pack();
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
+    }
+}
