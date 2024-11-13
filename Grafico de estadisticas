@@ -1,0 +1,75 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.geom.Line2D;
+
+public class GraficaEstadistica extends JPanel {
+    
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private int[] datosAltas;
+    private int[] datosBajas;
+
+    public GraficaEstadistica(int[] altas, int[] bajas) {
+        this.datosAltas = altas;
+        this.datosBajas = bajas;
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        Graphics2D g2d = (Graphics2D) g;
+
+        // Dibujar cuadrícula
+        dibujarCuadricula(g2d);
+
+        // Dibujar líneas para altas
+        g2d.setColor(Color.GREEN);
+        dibujarLineas(g2d, datosAltas);
+
+        // Dibujar líneas para bajas
+        g2d.setColor(Color.RED);
+        dibujarLineas(g2d, datosBajas);
+
+        // Dibujar flecha final
+        dibujarFlecha(g2d, datosAltas[datosAltas.length - 1], datosBajas[datosBajas.length - 1]);
+    }
+
+    private void dibujarCuadricula(Graphics2D g2d) {
+        g2d.setColor(Color.LIGHT_GRAY);
+        for (int i = 0; i <= getWidth(); i += 50) {
+            g2d.drawLine(i, 0, i, getHeight());
+        }
+        for (int i = 0; i <= getHeight(); i += 50) {
+            g2d.drawLine(0, i, getWidth(), i);
+        }
+    }
+
+    private void dibujarLineas(Graphics2D g2d, int[] datos) {
+        for (int i = 1; i < datos.length; i++) {
+            g2d.draw(new Line2D.Double((i - 1) * 50, getHeight() - datos[i - 1], i * 50, getHeight() - datos[i]));
+        }
+    }
+
+    private void dibujarFlecha(Graphics2D g2d, int alta, int baja) {
+        int x = (datosAltas.length - 1) * 50;
+        int y = getHeight() - alta;
+        g2d.setColor(Color.BLACK);
+        g2d.drawLine(x, y, x - 10, y - 10); // Flecha izquierda
+        g2d.drawLine(x, y, x - 10, y + 10); // Flecha derecha
+    }
+
+    public static void main(String[] args) {
+        // Datos de ejemplo
+        int[] altas = {100, 120, 130, 150, 170, 160};
+        int[] bajas = {80, 70, 60, 90, 85, 75};
+
+        JFrame frame = new JFrame("Gráfica Estadística de Altas y Bajas");
+        GraficaEstadistica grafica = new GraficaEstadistica(altas, bajas);
+        frame.add(grafica);
+        frame.setSize(400, 300);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setVisible(true);
+    }
+}
