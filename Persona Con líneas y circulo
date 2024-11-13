@@ -1,0 +1,43 @@
+import javax.swing.*;
+import java.awt.*;
+
+public class PersonaDibujo extends JPanel {
+
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	@Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        dibujarPersona(g);
+    }
+
+    private void dibujarPersona(Graphics g) {
+        // Dibujar cabeza (círculo)
+        g.setColor(Color.YELLOW);
+        g.fillOval(90, 20, 60, 60); // (x, y, ancho, alto)
+
+        // Dibujar cuerpo (línea)
+        g.setColor(Color.BLUE);
+        g.drawLine(120, 80, 120, 180); // (x1, y1, x2, y2)
+
+        // Dibujar brazos (líneas)
+        g.drawLine(120, 100, 70, 130); // brazo izquierdo
+        g.drawLine(120, 100, 170, 130); // brazo derecho
+
+        // Dibujar piernas (líneas)
+        g.drawLine(120, 180, 90, 250); // pierna izquierda
+        g.drawLine(120, 180, 150, 250); // pierna derecha
+    }
+
+    public static void main(String[] args) {
+        JFrame frame = new JFrame("Dibujo de una Persona");
+        PersonaDibujo panel = new PersonaDibujo();
+        frame.add(panel);
+        frame.setSize(300, 300);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setVisible(true);
+    }
+}
