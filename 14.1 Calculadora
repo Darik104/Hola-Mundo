@@ -1,0 +1,95 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class Calculadora extends JFrame implements ActionListener {
+    private JTextField display;
+    private String operador;
+    private double numero1, numero2;
+
+    public Calculadora() {
+        // Configuración de la ventana
+        setTitle("Calculadora Simple");
+        setSize(300, 400);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLayout(new BorderLayout());
+
+        // Pantalla de la calculadora
+        display = new JTextField();
+        display.setEditable(false);
+        display.setHorizontalAlignment(SwingConstants.RIGHT);
+        add(display, BorderLayout.NORTH);
+
+        // Panel de botones
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridLayout(4, 4));
+
+        // Crear botones
+        String[] botones = {
+            "7", "8", "9", "/",
+            "4", "5", "6", "*",
+            "1", "2", "3", "-",
+            "0", "C", "=", "+"
+        };
+
+        for (String texto : botones) {
+            JButton boton = new JButton(texto);
+            boton.addActionListener(this);
+            panel.add(boton);
+        }
+
+        add(panel, BorderLayout.CENTER);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        String comando = e.getActionCommand();
+
+        switch (comando) {
+            case "C":
+                display.setText("");
+                numero1 = numero2 = 0;
+                operador = "";
+                break;
+            case "=":
+                numero2 = Double.parseDouble(display.getText());
+                double resultado = 0;
+
+                switch (operador) {
+                    case "+":
+                        resultado = numero1 + numero2;
+                        break;
+                    case "-":
+                        resultado = numero1 - numero2;
+                        break;
+                    case "*":
+                        resultado = numero1 * numero2;
+                        break;
+                    case "/":
+                        resultado = numero1 / numero2;
+                        break;
+                }
+
+                display.setText(String.valueOf(resultado));
+                operador = "";
+                break;
+            default:
+                if ("+-*/".contains(comando)) {
+                    numero1 = Double.parseDouble(display.getText());
+                    operador = comando;
+                    display.setText("");
+                } else {
+                    display.setText(display.getText() + comando);
+                }
+                break;
+        }
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            Calculadora calculadora = new Calculadora();
+            calculadora.setVisible(true);
+        });
+    }
+}
