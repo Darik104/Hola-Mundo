@@ -1,0 +1,81 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class CalculadoraCientifica extends JFrame {
+    private JTextField pantalla;
+    
+    public CalculadoraCientifica() {
+        setTitle("Calculadora Científica");
+        setSize(400, 600);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setLayout(new BorderLayout());
+
+        pantalla = new JTextField();
+        pantalla.setEditable(false);
+        add(pantalla, BorderLayout.NORTH);
+
+        JPanel panelBotones = new JPanel();
+        panelBotones.setLayout(new GridLayout(6, 4));
+
+        String[] botones = {
+            "7", "8", "9", "/",
+            "4", "5", "6", "*",
+            "1", "2", "3", "-",
+            "0", ".", "=", "+",
+            "SIN", "COS", "TAN", "EXP",
+            "LOG", "√", "(", ")"
+        };
+
+        for (String texto : botones) {
+            JButton boton = new JButton(texto);
+            boton.addActionListener(new BotonListener());
+            panelBotones.add(boton);
+        }
+
+        add(panelBotones, BorderLayout.CENTER);
+    }
+
+    private class BotonListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            String comando = e.getActionCommand();
+            if (comando.equals("=")) {
+                calcular();
+            } else {
+                pantalla.setText(pantalla.getText() + comando);
+            }
+        }
+    }
+
+    private void calcular() {
+        String texto = pantalla.getText();
+        try {
+            // Evaluar la expresión (esto es solo un ejemplo simple)
+            // Aquí puedes implementar un parser para evaluar expresiones matemáticas
+            // Por simplicidad, solo se evalúan las funciones trigonométricas
+            if (texto.startsWith("SIN")) {
+                double valor = Double.parseDouble(texto.substring(3));
+                pantalla.setText(String.valueOf(Math.sin(Math.toRadians(valor))));
+            } else if (texto.startsWith("COS")) {
+                double valor = Double.parseDouble(texto.substring(3));
+                pantalla.setText(String.valueOf(Math.cos(Math.toRadians(valor))));
+            } else if (texto.startsWith("TAN")) {
+                double valor = Double.parseDouble(texto.substring(3));
+                pantalla.setText(String.valueOf(Math.tan(Math.toRadians(valor))));
+            } else {
+                pantalla.setText("Error");
+            }
+        } catch (Exception ex) {
+            pantalla.setText("Error");
+        }
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            CalculadoraCientifica calculadora = new CalculadoraCientifica();
+            calculadora.setVisible(true);
+        });
+    }
+}
