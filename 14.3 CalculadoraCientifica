@@ -1,0 +1,137 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Stack;
+
+public class CalculadoraCientifica extends JFrame implements ActionListener {
+    private JTextField display;
+    private StringBuilder input;
+    
+    public CalculadoraCientifica() {
+        input = new StringBuilder();
+        display = new JTextField();
+        display.setEditable(false);
+        display.setFont(new Font("Arial", Font.PLAIN, 24));
+        
+        // Configuración de la ventana
+        setTitle("Calculadora Científica");
+        setSize(400, 600);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLayout(new BorderLayout());
+        
+        // Añadir el display
+        add(display, BorderLayout.NORTH);
+        
+        // Panel de botones
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridLayout(6, 4));
+        
+        // Botones
+        String[] botones = {
+            "7", "8", "9", "/",
+            "4", "5", "6", "*",
+            "1", "2", "3", "-",
+            "0", ".", "=", "+",
+            "sin", "cos", "tan", "sqrt",
+            "C", "(", ")"
+        };
+        
+        for (String btn : botones) {
+            JButton button = new JButton(btn);
+            button.addActionListener(this);
+            panel.add(button);
+        }
+        
+        add(panel, BorderLayout.CENTER);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        String command = e.getActionCommand();
+        
+        if (command.charAt(0) == 'C') {
+            input.setLength(0);
+            display.setText("");
+        } else if (command.charAt(0) == '=') {
+            try {
+                double result = eval(input.toString());
+                display.setText(String.valueOf(result));
+                input.setLength(0);
+                input.append(result);
+            } catch (Exception ex) {
+                display.setText("Error");
+                input.setLength(0);
+            }
+        } else {
+            input.append(command);
+            display.setText(input.toString());
+        }
+    }
+
+    // Método para evaluar expresiones
+    private double eval(String expression) {
+        // Aquí puedes implementar un parser para evaluar la expresión
+        // Para simplificar, solo se implementan algunas funciones
+        if (expression.startsWith("sin")) {
+            return Math.sin(Math.toRadians(Double.parseDouble(expression.substring(3))));
+        } else if (expression.startsWith("cos")) {
+            return Math.cos(Math.toRadians(Double.parseDouble(expression.substring(3))));
+        } else if (expression.startsWith("tan")) {
+            return Math.tan(Math.toRadians(Double.parseDouble(expression.substring(3))));
+        } else if (expression.startsWith("sqrt")) {
+            return Math.sqrt(Double.parseDouble(expression.substring(4)));
+        } else {
+            // Evaluar la expresión aritmética básica
+            return new Object() {
+                int pos = -1, ch;
+
+                void nextChar() {
+                    ch = (++pos < expression.length()) ? expression.charAt(pos) : -1;
+                }
+
+                boolean eat(int charToEat) {
+                    while (ch == ' ') nextChar();
+                    if (ch == charToEat) {
+                        nextChar();
+                        return true;
+                    }
+                    return false;
+                }
+
+                double parse() {
+                    nextChar();
+                    double x = parseExpression();
+                    if (pos < expression.length()) throw new RuntimeException("Unexpected: " + (char) ch);
+                    return x;
+                }
+
+                double parseExpression() {
+                    double x = parseTerm();
+                    for (;;) {
+                        if (eat('+')) x += parseTerm(); 
+                        else if (eat('-')) x -= parseTerm(); 
+                        else return x;
+                    }
+                }
+
+                double parseTerm() {
+                    double x = parseFactor();
+                    for (;;) {
+                        if (eat('*')) x *= parseFactor(); 
+                        else if (eat('/')) x /= parseFactor(); 
+                        else return x;
+                    }
+                }
+
+                double parseFactor() {
+                    if (eat('+')) return parseFactor();
+                    if (eat('-')) return -parseFactor();
+
+                    double x;
+                    int startPos = this.pos;
+                    if (eat('(')) {
+                        x = parseExpression();
+                        eat(')');
+                    } else if ((ch >= '0' && ch <= '9') || ch == '.') {
+                        while ((ch >= '
